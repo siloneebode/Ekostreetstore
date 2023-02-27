@@ -1,0 +1,61 @@
+parameters:
+    admin_prefix:     '%env(resolve:ADMIN_PREFIX)%'
+    image_resize_key: '%env(resolve:IMAGE_RESIZE_KEY)%'
+    dkim_key: '%env(resolve:default::MAILER_DKIM)%'
+    container.dumper.inline_factories: true
+    container.dumper.inline_class_loader: true
+    router.request_context.host: 'ekostreetstore.com'
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $adminPrefix: '%admin_prefix%'
+            $appEnv: '%kernel.environment%'
+
+    _instanceof:
+        App\Normalizer\Breadcrumb\BreadcrumbGeneratorInterface:
+            tags: [ 'app.breadcrumb' ]
+
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Infrastructure/Migrations,Tests,Kernel.php}'
+
+    App\Http\Controller\:
+        resource: '../src/Http/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Admin\Controller\:
+        resource: '../src/Http/Admin/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Api\Controller\:
+        resource: '../src/Http/Api/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+
+    App\Http\Admin\Firewall\AdminRequestListener:
+        arguments: [ '%admin_prefix%' ]
+
+    Knp\Bundle\PaginatorBundle\Helper\Processor: ~
+
+    App\Helper\Paginator\PaginatorInterface:
+        class: App\Helper\Paginator\KnpPaginator
+
+    App\Http\Twig\TwigBreadcrumbExtension:
+        arguments: [ !tagged_iterator app.breadcrumb ]
+
+    App\Infrastructure\Image\ImageResizer:
+        arguments: [ '%image_resize_key%' ]
+
+    App\Infrastructure\Orm\DoctrineSchemaListener:
+        tags: [ 'doctrine.event_subscriber' ]
+
+
+    App\Http\Twig\TwigAssetExtension:
+        arguments:
+            $assetPath: '%kernel.project_dir%/public/assets'
+            $env: '%kernel.environment%'

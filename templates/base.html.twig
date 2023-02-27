@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title 'Ekobookstore' %} | Ekobookstore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% block stylesheets %}
+        {{- encore_entry_link_tags('app') }}
+    {% endblock %}
+    {% block javascripts %}
+        {{- encore_entry_script_tags('app') }}
+    {% endblock %}
+    <meta name="turbolinks-cache-control" content="no-cache"/>
+    <link rel="alternate" type="application/rss+xml" title="Grafikart.fr | Flux" href="{{ url('rss') }}"/>
+    {#     <link rel="apple-touch-icon" sizes="128x128" href="/favicons/icon-128x128.png"> #}
+    {% block meta '' -%}
+   {#  <meta property="og:title" content="{{ block('title') }}"/>
+    <meta property="og:site_name" content="Grafikart.fr"/>
+    <meta property="og:language" content="fr"/>
+    <meta name="twitter:author" content="@grafikart_fr"/>
+    <link rel="search" type="application/opensearchdescription+xml" title="Grafikart" href="/opensearch.xml"> #}
+</head>
+<body>
+    {% block body %}{% endblock %}
+    {% block javascripts_footer '' %}
+</body>
+</html>

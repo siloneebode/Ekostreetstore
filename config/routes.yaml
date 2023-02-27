@@ -1,0 +1,8 @@
+legacy_search:
+    path: /search
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'search'
+        permanent: true
+        keepQueryParams: true
+        keepRequestMethod: true
